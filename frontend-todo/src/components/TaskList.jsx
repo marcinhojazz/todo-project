@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import Button from './Button';
 
 const TaskList = ({ tasks, completeTask, removeTask, updateTask }) => {
   const [editingTaskId, setEditingTaskId] = useState(null);
@@ -19,62 +20,66 @@ const TaskList = ({ tasks, completeTask, removeTask, updateTask }) => {
   const handleUpdateClick = async (taskId) => {
     await updateTask(taskId, newTitle);
     setEditingTaskId(null);
-    setNewTitle(''); // Limpar o título após a atualização
+    setNewTitle('');
   };
 
   const handleKeyDown = (event, taskId) => {
-    if (event.key === 'Enter') {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
       handleUpdateClick(taskId);
     }
   };
 
   return (
-    <ul className='list-none p-0'>
+    <ul className="list-none p-0 w-full py-4">
       {tasks.map((task) => (
         <li
           key={task.id}
-          className={`flex items-center justify-between mb-2 border rounded ${task.completed ? 'line-through text-gray-500' : 'text-black'}`}
+          className={`flex gap-4 sm:flex-row justify-between mb-2 p-4 border rounded ${task.completed ? 'line-through text-gray-500' : 'text-black'} overflow-hidden`}
         >
           {editingTaskId === task.id ? (
-            <input
-              type='text'
-              value={newTitle}
-              ref={inputRef} // Adiciona a referência ao input
-              onChange={(e) => setNewTitle(e.target.value)}
-              onKeyDown={(e) => handleKeyDown(e, task.id)} // Adiciona o manipulador de eventos de teclado
-              className='flex-1 border p-1 mr-2 rounded'
-            />
+            <div className='w-full'>
+              <textarea
+                value={newTitle}
+                ref={inputRef}
+                onChange={(e) => setNewTitle(e.target.value)}
+                onKeyDown={(e) => handleKeyDown(e, task.id)}
+                className="w-full h-full p-1 border rounded resize-none"
+              />
+            </div>
           ) : (
-            <p className='flex-1'>{task.title}</p>
+            <div className='flex-1 text-ellipsis overflow-hidden w-full sm:w-auto'>
+              <p onClick={() => handleEditClick(task)} className="whitespace-pre-wrap">{task.title}</p>
+            </div>
           )}
-          <div className='flex'>
+          <div className="flex flex-col gap-2">
             {editingTaskId === task.id ? (
-              <button
-                className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded transition duration-300'
+              <Button
                 onClick={() => handleUpdateClick(task.id)}
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold mb-2 sm:mb-0 sm:mr-2"
               >
                 Update
-              </button>
+              </Button>
             ) : (
-              <button
-                className='bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-3 rounded transition duration-300 mr-2'
+              <Button
                 onClick={() => handleEditClick(task)}
+                className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold mb-2 sm:mb-0 sm:mr-2"
               >
                 Edit
-              </button>
+              </Button>
             )}
-            <button
-              className={`bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded transition duration-300 ${task.completed ? 'bg-gray-500' : ''}`}
+            <Button
               onClick={() => completeTask(task.id)}
+              className={`bg-green-500 hover:bg-green-700 text-white font-bold mb-2 sm:mb-0 sm:mr-2 ${task.completed ? 'bg-gray-500' : ''}`}
             >
               Complete
-            </button>
-            <button
-              className={`bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded ml-2 transition duration-300 ${task.completed ? 'bg-gray-500' : ''}`}
+            </Button>
+            <Button
               onClick={() => removeTask(task.id)}
+              className={`bg-red-500 hover:bg-red-700 text-white font-bold ${task.completed ? 'bg-gray-500' : ''}`}
             >
               Remove
-            </button>
+            </Button>
           </div>
         </li>
       ))}
