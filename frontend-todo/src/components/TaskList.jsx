@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Button from './Button';
+import PropTypes from 'prop-types';
 
 const TaskList = ({ tasks, completeTask, removeTask, updateTask }) => {
   const [editingTaskId, setEditingTaskId] = useState(null);
@@ -85,6 +86,17 @@ const TaskList = ({ tasks, completeTask, removeTask, updateTask }) => {
       ))}
     </ul>
   );
+};
+
+TaskList.propTypes = {
+  tasks: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired,
+    completed: PropTypes.bool.isRequired,
+  })).isRequired,
+  completeTask: PropTypes.func.isRequired,
+  removeTask: PropTypes.func.isRequired,
+  updateTask: PropTypes.func.isRequired,
 };
 
 export default TaskList;
