@@ -79,7 +79,7 @@ const App = () => {
             type="text"
             value={newTask}
             onChange={(e) => setNewTask(e.target.value)}
-            onKeyDown={handleKeyDown} // Adiciona o manipulador de eventos de teclado
+            onKeyDown={handleKeyDown}
             placeholder="New Task"
           />
           <button onClick={addTask} className='inline-flex gap-2 items-center bg-blue-500 transition-all ease-in-out duration-300 active:-translate-y-1 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded group'>
